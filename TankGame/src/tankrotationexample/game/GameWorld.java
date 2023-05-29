@@ -5,21 +5,15 @@ import tankrotationexample.GameConstants;
 import tankrotationexample.Launcher;
 import tankrotationexample.Resources;
 
-import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.KeyEvent;
-import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
 import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.nio.Buffer;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
-import java.util.Objects;
 
 /**
  * @author anthony-pc
@@ -32,21 +26,8 @@ public class GameWorld extends JPanel implements Runnable {
     private final Launcher lf;
     private long tick = 0;
 
-    List<Wall> walls;
-    List<Floor> floors;
+    List<GameObject> gameObjects;
 
-    List<BreakableWall> breakableWalls;
-
-    List<Health> health;
-
-    List<Shield> shield;
-
-    List<Speed> speed;
-
-
-
-
-    ArrayList<GameObject> worldObj;
 
 
     /**
@@ -93,12 +74,12 @@ public class GameWorld extends JPanel implements Runnable {
         this.world = new BufferedImage(GameConstants.GAME_WORLD_WIDTH,
                 GameConstants.GAME_WORLD_HEIGHT,
                 BufferedImage.TYPE_INT_RGB);
-        walls = new ArrayList<>();
-        floors = new ArrayList<>();
-        breakableWalls = new ArrayList<>();
-        health = new ArrayList<>();
-        shield = new ArrayList<>();
-        speed = new ArrayList<>();
+        gameObjects = new ArrayList<>();
+//        floors = new ArrayList<>();
+//        breakableWalls = new ArrayList<>();
+//        health = new ArrayList<>();
+//        shield = new ArrayList<>();
+//        speed = new ArrayList<>();
 
         InputStreamReader isr = new InputStreamReader(GameWorld.class.getClassLoader().getResourceAsStream("maps/map1.csv"));
 
@@ -111,30 +92,30 @@ public class GameWorld extends JPanel implements Runnable {
                     System.out.println(items[j]);
 //                        GameObject.getNewInstance(objectType, j*30, i*30);
                     if("9".equals(objectType)) {
-                        walls.add(new Wall (j*30, i*30, Resources.getSprites("wall")));
+                        gameObjects.add(new Wall (j*30, i*30, Resources.getSprites("wall")));
                     }
 //                        else if("0".equals(objectType)) {
 //                            floors.add(new Floor(j*30,i*30,Resources.getSprites("floor")));
 //
 //                        }
                     else if("2".equals(objectType)) {
-                        breakableWalls.add(new BreakableWall(j*30,i*30,Resources.getSprites("break1")));
+                        gameObjects.add(new BreakableWall(j*30,i*30,Resources.getSprites("break1")));
                     }
 
                     else if("3".equals(objectType)) {
-                        breakableWalls.add(new BreakableWall(j*30,i*30,Resources.getSprites("break2")));
+                        gameObjects.add(new BreakableWall(j*30,i*30,Resources.getSprites("break2")));
                     }
 
                     else if("4".equals(objectType)) {
-                        speed.add(new Speed(j*30,i*30,Resources.getSprites("speed")));
+                        gameObjects.add(new Speed(j*30,i*30,Resources.getSprites("speed")));
                     }
 
                     else if("5".equals(objectType)) {
-                        health.add(new Health(j*30,i*30,Resources.getSprites("health")));
+                        gameObjects.add(new Health(j*30,i*30,Resources.getSprites("health")));
                     }
 
                     else if("6".equals(objectType)) {
-                        shield.add(new Shield(j*30,i*30,Resources.getSprites("shield")));
+                        gameObjects.add(new Shield(j*30,i*30,Resources.getSprites("shield")));
                     }
 
 
@@ -157,6 +138,10 @@ public class GameWorld extends JPanel implements Runnable {
         t2 = new Tank(800 , 800, 0, 0, (short) 180, Resources.getSprites("tank2"));
         TankControl tc2 = new TankControl(t2, KeyEvent.VK_UP, KeyEvent.VK_DOWN, KeyEvent.VK_LEFT, KeyEvent.VK_RIGHT, KeyEvent.VK_PERIOD);
         this.lf.getJf().addKeyListener(tc2);
+
+        this.gameObjects.add(t1);
+        this.gameObjects.add(t2);
+
     }
 
 
@@ -186,11 +171,8 @@ public class GameWorld extends JPanel implements Runnable {
     }
 
     private void renderMap(Graphics2D buffer) {
-        this.walls.forEach(w -> w.drawImage(buffer));
-        this.shield.forEach(s -> s.drawImage(buffer));
-        this.health.forEach(h -> h.drawImage(buffer));
-        this.speed.forEach(sp -> sp.drawImage(buffer));
-        this.breakableWalls.forEach(b -> b.drawImage(buffer));
+        this.gameObjects.forEach(w -> w.drawImage(buffer));
+
         this.t1.drawImage(buffer);
         this.t2.drawImage(buffer);
     }

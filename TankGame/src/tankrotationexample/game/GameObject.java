@@ -3,8 +3,9 @@ package tankrotationexample.game;
 import tankrotationexample.Resources;
 
 import javax.naming.spi.ResolveResult;
+import java.awt.*;
 
-public class GameObject {
+public abstract class GameObject {
 
     // 0 - empty space
     // 2 - breakable walls
@@ -31,4 +32,6 @@ public class GameObject {
 
         };
     }
+
+    public abstract void drawImage(Graphics g);
 }

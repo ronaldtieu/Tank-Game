@@ -84,7 +84,7 @@ public class Bullet extends GameObject{
     }
 
 
-    void drawImage(Graphics g) {
+    public void drawImage(Graphics g) {
         AffineTransform rotation = AffineTransform.getTranslateInstance(x, y);
         rotation.rotate(Math.toRadians(angle), this.img.getWidth() / 2.0, this.img.getHeight() / 2.0);
 //        rotation.scale(6, 6); // scaling of how large the pictures are

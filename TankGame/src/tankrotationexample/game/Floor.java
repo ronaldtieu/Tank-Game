@@ -15,7 +15,7 @@ public class Floor extends GameObject{
         this.img = img;
     }
 
-    void drawImage(Graphics g) {
+    public void drawImage(Graphics g) {
         Graphics2D g2d = (Graphics2D) g;
         g2d.drawImage(this.img, (int) x, (int) y, null);
 
