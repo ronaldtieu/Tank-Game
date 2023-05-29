@@ -5,15 +5,21 @@ import tankrotationexample.GameConstants;
 import tankrotationexample.Launcher;
 import tankrotationexample.Resources;
 
+import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.KeyEvent;
+import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
 import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.nio.Buffer;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * @author anthony-pc
@@ -26,7 +32,7 @@ public class GameWorld extends JPanel implements Runnable {
     private final Launcher lf;
     private long tick = 0;
 
-    List<GameObject> gameObjects;
+    List<Wall> walls;
     List<Floor> floors;
 
     List<BreakableWall> breakableWalls;
@@ -60,9 +66,9 @@ public class GameWorld extends JPanel implements Runnable {
 //                System.out.println(t1.toString());
                 this.repaint();   // redraw game
                 /*
-                 * Sleep for 1000/144 ms (~6.9ms). This is done to have our 
-                 * loop run at a fixed rate per/sec. 
-                */
+                 * Sleep for 1000/144 ms (~6.9ms). This is done to have our
+                 * loop run at a fixed rate per/sec.
+                 */
                 Thread.sleep(1000 / 144);
             }
         } catch (InterruptedException ignored) {
@@ -87,7 +93,7 @@ public class GameWorld extends JPanel implements Runnable {
         this.world = new BufferedImage(GameConstants.GAME_WORLD_WIDTH,
                 GameConstants.GAME_WORLD_HEIGHT,
                 BufferedImage.TYPE_INT_RGB);
-        gameObjects = new ArrayList<>();
+        walls = new ArrayList<>();
         floors = new ArrayList<>();
         breakableWalls = new ArrayList<>();
         health = new ArrayList<>();
@@ -97,45 +103,45 @@ public class GameWorld extends JPanel implements Runnable {
         InputStreamReader isr = new InputStreamReader(GameWorld.class.getClassLoader().getResourceAsStream("maps/map1.csv"));
 
         try (BufferedReader mapReader = new BufferedReader(isr)) {
-                for (int i = 0; mapReader.ready(); i++) {
-                    String[] items = mapReader.readLine().split(",");
+            for (int i = 0; mapReader.ready(); i++) {
+                String[] items = mapReader.readLine().split(",");
 //                    System.out.println(Arrays.toString(items));
-                    for(int j = 0 ; j< items.length; j++) {
-                        String objectType = items[j];
-                        System.out.println(items[j]);
+                for(int j = 0 ; j< items.length; j++) {
+                    String objectType = items[j];
+                    System.out.println(items[j]);
 //                        GameObject.getNewInstance(objectType, j*30, i*30);
-                        if("9".equals(objectType)) {
-                            gameObjects.add(new Wall (j*30, i*30, Resources.getSprites("wall")));
-                        }
+                    if("9".equals(objectType)) {
+                        walls.add(new Wall (j*30, i*30, Resources.getSprites("wall")));
+                    }
 //                        else if("0".equals(objectType)) {
 //                            floors.add(new Floor(j*30,i*30,Resources.getSprites("floor")));
 //
 //                        }
-                        else if("2".equals(objectType)) {
-                            gameObjects.add(new BreakableWall(j*30,i*30,Resources.getSprites("break1")));
-                        }
-
-                        else if("3".equals(objectType)) {
-                            gameObjects.add(new BreakableWall(j*30,i*30,Resources.getSprites("break2")));
-                        }
-
-                        else if("4".equals(objectType)) {
-                            gameObjects.add(new Speed(j*30,i*30,Resources.getSprites("speed")));
-                        }
-
-                        else if("5".equals(objectType)) {
-                            gameObjects.add(new Health(j*30,i*30,Resources.getSprites("health")));
-                        }
-
-                        else if("6".equals(objectType)) {
-                            gameObjects.add(new Shield(j*30,i*30,Resources.getSprites("shield")));
-                        }
-
-
-
+                    else if("2".equals(objectType)) {
+                        breakableWalls.add(new BreakableWall(j*30,i*30,Resources.getSprites("break1")));
                     }
-//                    line = mapReader.readLine();
+
+                    else if("3".equals(objectType)) {
+                        breakableWalls.add(new BreakableWall(j*30,i*30,Resources.getSprites("break2")));
+                    }
+
+                    else if("4".equals(objectType)) {
+                        speed.add(new Speed(j*30,i*30,Resources.getSprites("speed")));
+                    }
+
+                    else if("5".equals(objectType)) {
+                        health.add(new Health(j*30,i*30,Resources.getSprites("health")));
+                    }
+
+                    else if("6".equals(objectType)) {
+                        shield.add(new Shield(j*30,i*30,Resources.getSprites("shield")));
+                    }
+
+
+
                 }
+//                    line = mapReader.readLine();
+            }
 
 //                walls.forEach(System.out::println);
 
@@ -180,7 +186,7 @@ public class GameWorld extends JPanel implements Runnable {
     }
 
     private void renderMap(Graphics2D buffer) {
-        this.gameObjects.forEach(w -> w.drawImage(buffer));
+        this.walls.forEach(w -> w.drawImage(buffer));
         this.shield.forEach(s -> s.drawImage(buffer));
         this.health.forEach(h -> h.drawImage(buffer));
         this.speed.forEach(sp -> sp.drawImage(buffer));

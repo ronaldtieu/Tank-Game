@@ -165,7 +165,7 @@ public class Tank{
         x -= vx;
         y -= vy;
         centerScreen();
-       checkBorder(); // ensure we do not go off screen when using this key
+        checkBorder(); // ensure we do not go off screen when using this key
     }
 
     private void moveForwards() {

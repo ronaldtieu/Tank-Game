@@ -3,7 +3,6 @@ package tankrotationexample.game;
 import tankrotationexample.Resources;
 
 import javax.naming.spi.ResolveResult;
-import java.awt.*;
 
 public class GameObject {
 
@@ -31,8 +30,5 @@ public class GameObject {
 
 
         };
-    }
-
-    public void drawImage(Graphics2D buffer) {
     }
 }
