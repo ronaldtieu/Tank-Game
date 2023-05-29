@@ -20,4 +20,11 @@ public class Floor extends GameObject{
         g2d.drawImage(this.img, (int) x, (int) y, null);
 
     }
+
+    @Override
+    public Rectangle getHitbox() {
+        return null;
+    }
+
+
 }

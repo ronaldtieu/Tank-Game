@@ -39,6 +39,7 @@ public class Tank extends GameObject{
     private boolean RightPressed;
     private boolean LeftPressed;
     private boolean shootPressed;
+    private Rectangle hitbox;
 
     Tank(float x, float y, float vx, float vy, float angle, BufferedImage img ) {
         this.x = x;
@@ -47,6 +48,12 @@ public class Tank extends GameObject{
         this.vy = vy;
         this.img = img;
         this.angle = angle;
+        this.hitbox = (new Rectangle((int)x, (int)y, this.img.getWidth(), this.img.getHeight()));
+
+    }
+
+    public Rectangle getHitbox() {
+        return this.hitbox.getBounds();
     }
 
     public float getScreen_x() {
@@ -147,7 +154,8 @@ public class Tank extends GameObject{
 
 
         this.ammo.forEach(bullet->bullet.update());
-        System.out.println(this.ammo.size());
+        this.hitbox.setLocation((int)x, (int)y);
+
 
     }
 
@@ -226,5 +234,16 @@ public class Tank extends GameObject{
 
     public void unToggleShootPressed() {
         this.shootPressed = false;
+    }
+
+    public void collides(GameObject with){
+        if(with instanceof Wall) {
+            this.moveBackwards();
+        } else if (with instanceof Powerup) {
+            // do something with powerup
+        } else if (with instanceof Tank) {
+            this.moveBackwards();
+        }
+
     }
 }

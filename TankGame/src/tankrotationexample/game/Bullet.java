@@ -1,5 +1,6 @@
 package tankrotationexample.game;
 
+import org.w3c.dom.css.Rect;
 import tankrotationexample.GameConstants;
 
 import java.awt.*;
@@ -21,6 +22,8 @@ public class Bullet extends GameObject{
 
     private float charge = 3f;
 
+    private Rectangle hitbox;
+
     Bullet(float x, float y, BufferedImage img, float angle ) {
         this.x = x;
         this.y = y;
@@ -28,6 +31,8 @@ public class Bullet extends GameObject{
         this.vy = vy;
         this.img = img;
         this.angle = angle;
+        this.hitbox = (new Rectangle((int)x, (int)y, this.img.getWidth(), this.img.getHeight()));
+
     }
 
 
@@ -46,6 +51,12 @@ public class Bullet extends GameObject{
     void setY(float y) { this. y = y;}
 
 
+    public Rectangle getHitbox() {
+        return this.hitbox.getBounds();
+    }
+
+
+
     void update() {
         // move forward logic
         vx = Math.round(R * Math.cos(Math.toRadians(angle)));
@@ -53,6 +64,8 @@ public class Bullet extends GameObject{
         x += vx;
         y += vy;
         checkBorder();
+        this.hitbox.setLocation((int)x, (int)y);
+
     }
 
 

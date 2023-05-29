@@ -44,7 +44,8 @@ public class GameWorld extends JPanel implements Runnable {
                 this.tick++;
                 this.t1.update(); // update tank
                 this.t2.update();
-//                System.out.println(t1.toString());
+                this.checkCollision();
+
                 this.repaint();   // redraw game
                 /*
                  * Sleep for 1000/144 ms (~6.9ms). This is done to have our
@@ -54,6 +55,24 @@ public class GameWorld extends JPanel implements Runnable {
             }
         } catch (InterruptedException ignored) {
             System.out.println(ignored);
+        }
+    }
+
+    private void checkCollision() {
+        for(int i = 0; i < this.gameObjects.size(); i++) {
+            GameObject obj1 = this.gameObjects.get(i);
+            for(int j = 0; j < this.gameObjects.size(); j++) {
+                if(i==j)
+                    continue; // to avoid checking the same object
+                GameObject obj2 = this.gameObjects.get(j);
+                if(obj1.getHitbox().intersects(obj2.getHitbox())){
+                    System.out.println(obj1 + " has it hit " + obj2);
+                    if(obj1 instanceof Tank) {
+                        Tank tank = (Tank) obj1;
+                        tank.collides(obj2);
+                    }
+                }
+            }
         }
     }
 
@@ -75,11 +94,7 @@ public class GameWorld extends JPanel implements Runnable {
                 GameConstants.GAME_WORLD_HEIGHT,
                 BufferedImage.TYPE_INT_RGB);
         gameObjects = new ArrayList<>();
-//        floors = new ArrayList<>();
-//        breakableWalls = new ArrayList<>();
-//        health = new ArrayList<>();
-//        shield = new ArrayList<>();
-//        speed = new ArrayList<>();
+
 
         InputStreamReader isr = new InputStreamReader(GameWorld.class.getClassLoader().getResourceAsStream("maps/map1.csv"));
 
@@ -89,7 +104,7 @@ public class GameWorld extends JPanel implements Runnable {
 //                    System.out.println(Arrays.toString(items));
                 for(int j = 0 ; j< items.length; j++) {
                     String objectType = items[j];
-                    System.out.println(items[j]);
+//                    System.out.println(items[j]);
 //                        GameObject.getNewInstance(objectType, j*30, i*30);
                     if("9".equals(objectType)) {
                         gameObjects.add(new Wall (j*30, i*30, Resources.getSprites("wall")));

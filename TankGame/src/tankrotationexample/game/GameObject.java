@@ -2,7 +2,6 @@ package tankrotationexample.game;
 
 import tankrotationexample.Resources;
 
-import javax.naming.spi.ResolveResult;
 import java.awt.*;
 
 public abstract class GameObject {
@@ -34,4 +33,6 @@ public abstract class GameObject {
     }
 
     public abstract void drawImage(Graphics g);
+
+    public abstract Rectangle getHitbox();
 }
