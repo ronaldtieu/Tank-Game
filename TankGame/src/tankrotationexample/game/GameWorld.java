@@ -70,6 +70,11 @@ public class GameWorld extends JPanel implements Runnable {
                     if(obj1 instanceof Tank) {
                         Tank tank = (Tank) obj1;
                         tank.collides(obj2);
+                        if (obj2 instanceof Powerup) {
+                            // Remove the image from the gameObjects list
+                            this.gameObjects.remove(j);
+                            j--; // Adjust the index after removing an element
+                        }
                     }
                 }
             }

@@ -3,7 +3,7 @@ package tankrotationexample.game;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 
-public class Speed extends GameObject{
+public class Speed extends GameObject implements Powerup{
 
     private float x,y;
     private BufferedImage img;
@@ -28,4 +28,8 @@ public class Speed extends GameObject{
         return this.hitbox.getBounds();
     }
 
+    @Override
+    public void applyPower(Tank tank) {
+        tank.speedUp();
+    }
 }

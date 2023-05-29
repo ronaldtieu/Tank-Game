@@ -1,4 +1,7 @@
 package tankrotationexample.game;
 
-public interface Powerup {
+public interface Powerup{
+
+
+    void applyPower(Tank tank);
 }

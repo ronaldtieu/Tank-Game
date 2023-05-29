@@ -240,10 +240,14 @@ public class Tank extends GameObject{
         if(with instanceof Wall) {
             this.moveBackwards();
         } else if (with instanceof Powerup) {
-            // do something with powerup
+            ((Powerup) with).applyPower(this);
         } else if (with instanceof Tank) {
             this.moveBackwards();
         }
 
+    }
+
+    public void speedUp() {
+        this.R = (float) (R * 1.1);
     }
 }
