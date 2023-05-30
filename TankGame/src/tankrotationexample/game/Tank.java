@@ -41,6 +41,12 @@ public class Tank extends GameObject{
     private boolean shootPressed;
     private Rectangle hitbox;
 
+    private int health;
+
+    private int lives;
+
+    private int shield;
+
     Tank(float x, float y, float vx, float vy, float angle, BufferedImage img ) {
         this.x = x;
         this.y = y;
@@ -49,7 +55,38 @@ public class Tank extends GameObject{
         this.img = img;
         this.angle = angle;
         this.hitbox = (new Rectangle((int)x, (int)y, this.img.getWidth(), this.img.getHeight()));
+        this.health = 100;
+        this.lives = 3;
+        this.shield = 0;
 
+    }
+
+    public List<Bullet> getListOfBullets(){
+        return ammo;
+    }
+
+    public void increaseHealth() {
+        this.health = health + 25;
+        if(health > 100) {
+            health = 100;
+        }
+
+    }
+
+    public void increaseShield() {
+        this.shield = shield + 25;
+    }
+
+    public int getShield() {
+        return this.shield;
+    }
+
+    public int getHealth() {
+        return this.health;
+    }
+
+    public int getLives() {
+        return this.lives;
     }
 
     public Rectangle getHitbox() {
@@ -153,10 +190,16 @@ public class Tank extends GameObject{
         }
 
 
+
         this.ammo.forEach(bullet->bullet.update());
         this.hitbox.setLocation((int)x, (int)y);
 
-
+        for(int i = 0; i <ammo.size(); i ++) {
+            if(ammo.get(i).isAlive() == false) {
+                ammo.remove(i);
+                i--;
+            }
+        }
     }
 
     private void rotateLeft() {
@@ -243,11 +286,26 @@ public class Tank extends GameObject{
             ((Powerup) with).applyPower(this);
         } else if (with instanceof Tank) {
             this.moveBackwards();
+        } else if (with instanceof Bullet) {
+            this.inflictDamage();
         }
 
     }
 
     public void speedUp() {
-        this.R = (float) (R * 1.1);
+        this.R = (float) (R * 1.2);
+    }
+
+    public void inflictDamage() {
+        if(shield > 0) {
+            shield = shield - 25;
+
+        } else {
+            this.health = health - 25;
+        }
+        System.out.println("Tank has taken damage.");
+        System.out.println("Tank shield = " + shield);
+
+        System.out.println("Tank health = " + health);
     }
 }

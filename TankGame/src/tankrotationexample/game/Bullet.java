@@ -24,6 +24,10 @@ public class Bullet extends GameObject{
 
     private Rectangle hitbox;
 
+    private int damage;
+
+    private boolean alive = true;
+
     Bullet(float x, float y, BufferedImage img, float angle ) {
         this.x = x;
         this.y = y;
@@ -32,12 +36,16 @@ public class Bullet extends GameObject{
         this.img = img;
         this.angle = angle;
         this.hitbox = (new Rectangle((int)x, (int)y, this.img.getWidth(), this.img.getHeight()));
+        this.damage = 25;
+
 
     }
 
 
 
-
+    public boolean isAlive() {
+        return alive;
+    }
     float getX() {
         return this.x;
     }
@@ -54,6 +62,15 @@ public class Bullet extends GameObject{
     public Rectangle getHitbox() {
         return this.hitbox.getBounds();
     }
+
+    public int getDamage(){
+        return this.damage;
+    }
+
+    public boolean notAlive(){
+        return alive = false;
+    }
+
 
 
 
@@ -83,6 +100,9 @@ public class Bullet extends GameObject{
         if (y >= GameConstants.GAME_WORLD_HEIGHT - 80) {
             y = GameConstants.GAME_WORLD_HEIGHT - 80;
         }
+//        if (x < 0 || x >= GameConstants.GAME_WORLD_WIDTH  || y < 0 || y >= GameConstants.GAME_WORLD_HEIGHT - 100) {
+//            alive = false;
+//        }
     }
 
     public void increaseCharge() {
@@ -116,4 +136,6 @@ public class Bullet extends GameObject{
         this.y = y;
         this.angle = angle;
     }
+
+
 }

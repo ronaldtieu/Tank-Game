@@ -57,29 +57,55 @@ public class GameWorld extends JPanel implements Runnable {
             System.out.println(ignored);
         }
     }
-
     private void checkCollision() {
-        for(int i = 0; i < this.gameObjects.size(); i++) {
-            GameObject obj1 = this.gameObjects.get(i);
-            for(int j = 0; j < this.gameObjects.size(); j++) {
-                if(i==j)
+        // Check bullet collisions with tanks
+        List<Bullet> t1Bullets = t1.getListOfBullets();
+        for (int i = 0; i < t1Bullets.size(); i++) {
+            Bullet bullet = t1Bullets.get(i);
+            if (bullet.getHitbox().intersects(t2.getHitbox())) {
+                t2.collides(bullet);
+                bullet.notAlive();
+            }
+        }
+
+        List<Bullet> t2Bullets = t2.getListOfBullets();
+        for (int i = 0; i < t2Bullets.size(); i++) {
+            Bullet bullet = t2Bullets.get(i);
+            if (bullet.getHitbox().intersects(t1.getHitbox())) {
+                t1.collides(bullet);
+                bullet.notAlive();
+            }
+        }
+
+        // Check bullet collisions with overworld objects
+        for (int i = 0; i < gameObjects.size(); i++) {
+            GameObject obj1 = gameObjects.get(i);
+            for (int j = 0; j < gameObjects.size(); j++) {
+                if (i == j)
                     continue; // to avoid checking the same object
-                GameObject obj2 = this.gameObjects.get(j);
-                if(obj1.getHitbox().intersects(obj2.getHitbox())){
+                GameObject obj2 = gameObjects.get(j);
+                if (obj1.getHitbox().intersects(obj2.getHitbox())) {
                     System.out.println(obj1 + " has it hit " + obj2);
-                    if(obj1 instanceof Tank) {
+                    if (obj1 instanceof Tank) {
                         Tank tank = (Tank) obj1;
                         tank.collides(obj2);
-                        if (obj2 instanceof Powerup) {
+                        if (obj2 instanceof Powerup) { // will remove the powerup object on collision
                             // Remove the image from the gameObjects list
-                            this.gameObjects.remove(j);
-                            j--; // Adjust the index after removing an element
+                            gameObjects.remove(j);
+                            j--; // Adjust the index after removing gameobject
                         }
+                    } else if (obj1 instanceof Bullet && obj2 instanceof Wall) {
+                        // Remove the bullet image from the gameObjects list
+                        gameObjects.remove(i);
+                        i--; // Adjust the index after removing an element
+                        break; // Skip checking other collisions for this bullet
                     }
                 }
             }
         }
+
     }
+
 
     /**
      * Reset game to its initial state.
@@ -106,18 +132,13 @@ public class GameWorld extends JPanel implements Runnable {
         try (BufferedReader mapReader = new BufferedReader(isr)) {
             for (int i = 0; mapReader.ready(); i++) {
                 String[] items = mapReader.readLine().split(",");
-//                    System.out.println(Arrays.toString(items));
                 for(int j = 0 ; j< items.length; j++) {
                     String objectType = items[j];
-//                    System.out.println(items[j]);
-//                        GameObject.getNewInstance(objectType, j*30, i*30);
+
                     if("9".equals(objectType)) {
                         gameObjects.add(new Wall (j*30, i*30, Resources.getSprites("wall")));
                     }
-//                        else if("0".equals(objectType)) {
-//                            floors.add(new Floor(j*30,i*30,Resources.getSprites("floor")));
-//
-//                        }
+
                     else if("2".equals(objectType)) {
                         gameObjects.add(new BreakableWall(j*30,i*30,Resources.getSprites("break1")));
                     }

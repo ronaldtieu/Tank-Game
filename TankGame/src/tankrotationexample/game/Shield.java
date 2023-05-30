@@ -3,7 +3,7 @@ package tankrotationexample.game;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 
-public class Shield extends GameObject{
+public class Shield extends GameObject implements Powerup{
 
     private float x,y;
     private BufferedImage img;
@@ -28,6 +28,10 @@ public class Shield extends GameObject{
     }
 
 
+    @Override
+    public void applyPower(Tank tank) {
 
-
+        tank.increaseShield();
+        System.out.println("Tank Shield increase to = " + tank.getShield());
+    }
 }

@@ -3,7 +3,7 @@ package tankrotationexample.game;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 
-public class Health extends GameObject{
+public class Health extends GameObject implements Powerup{
 
     private float x,y;
     private BufferedImage img;
@@ -28,4 +28,9 @@ public class Health extends GameObject{
         return this.hitbox.getBounds();
     }
 
+    @Override
+    public void applyPower(Tank tank) {
+        tank.increaseHealth();
+        System.out.println("Tank increase health to = " + tank.getHealth());
+    }
 }
