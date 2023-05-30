@@ -27,6 +27,7 @@ public class GameWorld extends JPanel implements Runnable {
     private long tick = 0;
 
     List<GameObject> gameObjects;
+    Sound bg = Resources.getSound("game_screen");
 
 
 
@@ -40,6 +41,10 @@ public class GameWorld extends JPanel implements Runnable {
     @Override
     public void run() {
         try {
+
+            bg.setLooping();
+//            bg.setVolume(2.3f);
+            bg.play();
             while (true) {
                 this.tick++;
                 this.t1.update(); // update tank
@@ -57,11 +62,16 @@ public class GameWorld extends JPanel implements Runnable {
             System.out.println(ignored);
         }
     }
+
+
+
     private void checkCollision() {
+
         // Check bullet collisions with tanks
+        // try to refactor into current for loop
         List<Bullet> t1Bullets = t1.getListOfBullets();
-        for (int i = 0; i < t1Bullets.size(); i++) {
-            Bullet bullet = t1Bullets.get(i);
+        for (int k = 0; k < t1Bullets.size(); k++) {
+            Bullet bullet = t1Bullets.get(k);
             if (bullet.getHitbox().intersects(t2.getHitbox())) {
                 t2.collides(bullet);
                 bullet.notAlive();
@@ -69,8 +79,8 @@ public class GameWorld extends JPanel implements Runnable {
         }
 
         List<Bullet> t2Bullets = t2.getListOfBullets();
-        for (int i = 0; i < t2Bullets.size(); i++) {
-            Bullet bullet = t2Bullets.get(i);
+        for (int l = 0; l < t2Bullets.size(); l++) {
+            Bullet bullet = t2Bullets.get(l);
             if (bullet.getHitbox().intersects(t1.getHitbox())) {
                 t1.collides(bullet);
                 bullet.notAlive();
@@ -94,12 +104,16 @@ public class GameWorld extends JPanel implements Runnable {
                             gameObjects.remove(j);
                             j--; // Adjust the index after removing gameobject
                         }
-                    } else if (obj1 instanceof Bullet && obj2 instanceof Wall) {
-                        // Remove the bullet image from the gameObjects list
-                        gameObjects.remove(i);
+                    } else if (obj1 instanceof Bullet && obj2 instanceof BreakableWall) { // why is it that when i put obj2 instanceof Tank it, walls are removed on collision but not bullets
+
+
+                        System.out.println("Bullet hit wall");
+                        Bullet bullet = (Bullet) obj1;
+                        bullet.notAlive();
+                        gameObjects.remove(i); // to remove breakable walls
                         i--; // Adjust the index after removing an element
-                        break; // Skip checking other collisions for this bullet
                     }
+
                 }
             }
         }

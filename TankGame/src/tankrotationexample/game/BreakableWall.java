@@ -27,4 +27,11 @@ public class BreakableWall extends Wall {
     public Rectangle getHitbox() {
         return this.hitbox.getBounds();
     }
+
+    public void BulletCollide(Tank tank) {
+        // get the list of bullets
+        // size of bullet
+        // at i, = false. update?
+        tank.update();
+    }
 }

@@ -184,6 +184,7 @@ public class Tank extends GameObject{
 //            b = new Bullet(x, y, Resources.getSprites("bullet"), angle);
             this.timeSinceLastShot = System.currentTimeMillis();
 
+            Resources.getSound("fire").play();
             this.ammo.add(new Bullet(x, y, Resources.getSprites("bullet"), angle));
 
 
@@ -283,6 +284,7 @@ public class Tank extends GameObject{
         if(with instanceof Wall) {
             this.moveBackwards();
         } else if (with instanceof Powerup) {
+            Resources.getSound("pickup").play();
             ((Powerup) with).applyPower(this);
         } else if (with instanceof Tank) {
             this.moveBackwards();
@@ -297,15 +299,33 @@ public class Tank extends GameObject{
     }
 
     public void inflictDamage() {
+        if(health == 0) {
+            this.lives = lives - 1;
+            health = 100; // reset health
+        }
+
+
+
         if(shield > 0) {
             shield = shield - 25;
 
         } else {
             this.health = health - 25;
         }
+
+        checkLives();
+
+
         System.out.println("Tank has taken damage.");
         System.out.println("Tank shield = " + shield);
 
         System.out.println("Tank health = " + health);
+    }
+
+    private void checkLives() {
+
+        if(lives == 0 && health == 0) {
+            System.out.println("Game Over");
+        }
     }
 }
